@@ -11,7 +11,6 @@ class WebPageGeneric implements WebPage
 {
 
     private ViewTopology $viewTopology;
-    
     private array $jsImportMap = array(
         'imports' => []
     );
@@ -40,10 +39,19 @@ class WebPageGeneric implements WebPage
 
     public function setPageKeywords(string|array $keywords): self
     {
-        if (is_array($keywords)) {
-            $keywords = implode(',', $keywords);
+        $keywordsOld = explode(',', $this->vars['keywords']);
+
+        if (is_string($keywords)) {
+            $keywords = explode(',', $keywords);
         }
-        $this->vars['keywords'] = $keywords;
+
+        // merge old keywords and new
+        $keywordsNew = array_merge($keywordsOld, $keywords);
+
+        // remove duplicates and empty values
+        $result = array_filter(array_unique($keywordsNew));
+
+        $this->vars['keywords'] = implode(',', $result);
         return $this;
     }
 

@@ -82,7 +82,7 @@ class ViewEnv implements ViewTopology
 
     public function setJsThemeUrl(string $url): ViewTopology
     {
-        $this->url['css_global_url'] = $url;
+        $this->url['js_theme_url'] = $url;
         return $this;
     }
 
