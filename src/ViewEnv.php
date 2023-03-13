@@ -15,10 +15,12 @@ class ViewEnv implements ViewTopology
     ];
     public array $url = [
         'base_url' => '',
-        'css_global_url' => '',
-        'css_theme_url' => '',
-        'js_global_url' => '',
-        'js_theme_url' => ''
+        'libs_url' => '',
+        'css_url' => '',
+        'images_url' => '',
+        'fonts_url' => '',
+        'js_url' => '',
+        'theme_url' => ''
     ];
 
     public function getBaseUrl(): string
@@ -26,24 +28,34 @@ class ViewEnv implements ViewTopology
         return $this->url['base_url'];
     }
 
-    public function getCssGlobalUrl(): string
+    public function getThemeUrl(): string
     {
-        return $this->url['css_global_url'];
+        return $this->url['theme_url'];
     }
 
-    public function getCssThemeUrl(): string
+    public function getLibsUrl(): string
     {
-        return $this->url['css_theme_url'];
+        return $this->url['libs_url'];
     }
 
-    public function getJsGlobalUrl(): string
+    public function getCssUrl(): string
     {
-        return $this->url['js_global_url'];
+        return $this->url['css_url'];
     }
 
-    public function getJsThemeUrl(): string
+    public function getJsUrl(): string
     {
-        return $this->url['js_theme_url'];
+        return $this->url['js_url'];
+    }
+
+    public function getFontsUrl(): string
+    {
+        return $this->url['fonts_url'];
+    }
+
+    public function getImagesUrl(): string
+    {
+        return $this->url['images_url'];
     }
 
     public function getTemplatePath(): string
@@ -62,27 +74,39 @@ class ViewEnv implements ViewTopology
         return $this;
     }
 
-    public function setCssGlobalUrl(string $url): ViewTopology
+    public function setThemeUrl(string $url): ViewTopology
     {
-        $this->url['css_global_url'] = $url;
+        $this->url['theme_url'] = $url;
         return $this;
     }
 
-    public function setCssThemeUrl(string $url): ViewTopology
+    public function setLibsUrl(string $url): ViewTopology
     {
-        $this->url['css_theme_url'] = $url;
+        $this->url['libs_url'] = $url;
         return $this;
     }
 
-    public function setJsGlobalUrl(string $url): ViewTopology
+    public function setCssUrl(string $url): ViewTopology
     {
-        $this->url['js_global_url'] = $url;
+        $this->url['css_url'] = $url;
         return $this;
     }
 
-    public function setJsThemeUrl(string $url): ViewTopology
+    public function setJsUrl(string $url): ViewTopology
     {
-        $this->url['js_theme_url'] = $url;
+        $this->url['js_url'] = $url;
+        return $this;
+    }
+
+    public function setFontsUrl(string $url): ViewTopology
+    {
+        $this->url['fonts_url'] = $url;
+        return $this;
+    }
+
+    public function setImagesUrl(string $url): ViewTopology
+    {
+        $this->url['images_url'] = $url;
         return $this;
     }
 

@@ -6,15 +6,32 @@ namespace App\View;
 
 use App\View\Interfaces\ViewTopology;
 use App\View\Interfaces\WebPage;
+use \Exception;
+use function explode;
+use function implode;
+use function array_key_exists;
+use function array_merge;
+use function array_filter;
+use function array_unique;
+use function json_encode;
+use function str_replace;
 
 class WebPageGeneric implements WebPage
 {
 
+    private array $attributes = [];
     private ViewTopology $viewTopology;
     private array $jsImportMap = array(
         'imports' => []
     );
     private array $vars = [
+        'urlBase' => '',
+        'urlLibs' => '',
+        'urlCss' => '',
+        'urlJs' => '',
+        'urlTheme' => '',
+        'urlImages' => '',
+        'urlFonts' => '',
         'microformat' => '',
         'keywords' => '',
         'title' => '',
@@ -77,7 +94,7 @@ class WebPageGeneric implements WebPage
     {
         foreach ($vars as $oneVar => $varValue) {
             if ($internal) {
-                $a = $this->viewTopology->getJsGlobalUrl() . '/' . $varValue;
+                $a = $this->viewTopology->getLibsUrl() . '/' . $varValue;
             } else {
                 $a = $varValue;
             }
@@ -117,14 +134,14 @@ class WebPageGeneric implements WebPage
         if (!empty($version)) {
             $version = '?v=' . $version;
         }
-        $url = $this->viewTopology->getJsThemeUrl() . '/' . $scriptName . $version;
+        $url = $this->viewTopology->getJsUrl() . '/' . $scriptName . $version;
         $this->setScriptCdn($url, $header, $params);
         return $this;
     }
 
     public function setScriptLib(string $scriptName, bool $header = true, string $params = ''): self
     {
-        $url = $this->viewTopology->getJsGlobalUrl() . '/' . $scriptName;
+        $url = $this->viewTopology->getLibsUrl() . '/' . $scriptName;
         $this->setScriptCdn($url, $header, $params);
         return $this;
     }
@@ -146,21 +163,48 @@ class WebPageGeneric implements WebPage
         if (!empty($version)) {
             $version = '?v=' . $version;
         }
-        $url = $this->viewTopology->getCssThemeUrl() . '/' . $styleName . $version;
+        $url = $this->viewTopology->getCssUrl() . '/' . $styleName . $version;
         $this->setStyleCdn($url);
         return $this;
     }
 
     public function setStyleLib(string $styleName): self
     {
-        $url = $this->viewTopology->getCssGlobalUrl() . '/' . $styleName;
+        $url = $this->viewTopology->getCssUrl() . '/' . $styleName;
         $this->setStyleCdn($url);
+        return $this;
+    }
+
+    public function setAttribute(string $key, mixed $value): self
+    {
+        if (isset($this->attributes[$key])) {
+            throw new Exception("WebPageGeneric::setAttribute() Attribute with key " . $key . " exists");
+        }
+        $this->attributes[$key] = $value;
         return $this;
     }
 
     public function getWebpage(): array
     {
-        return $this->vars;
+        $this->vars['urlBase'] = $this->viewTopology->getBaseUrl();
+        $this->vars['urlLibs'] = $this->viewTopology->getLibsUrl();
+        $this->vars['urlCss'] = $this->viewTopology->getCssUrl();
+        $this->vars['urlJs'] = $this->viewTopology->getJsUrl();
+        $this->vars['urlImages'] = $this->viewTopology->getImagesUrl();
+        $this->vars['urlFonts'] = $this->viewTopology->getFontsUrl();
+        $this->vars['urlTheme'] = $this->viewTopology->getThemeUrl();
+
+        $res = $this->vars;
+
+        foreach ($this->attributes as $key => $value) {
+            if (array_key_exists($key, $res)) {
+                throw new Exception('WebPageGeneric::getWebpage() Attribute with key ' . $key . ' exists');
+            } else {
+                $res[$key] = $value;
+            }
+        }
+
+        return $res;
     }
 
 }
