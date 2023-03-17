@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\View;
+namespace Core\View;
 
-use App\View\Interfaces\ViewTopology;
+use Core\View\Interfaces\ViewTopology;
 
 class ViewEnv implements ViewTopology
 {

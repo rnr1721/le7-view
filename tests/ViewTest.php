@@ -1,7 +1,7 @@
 <?php
 
-use App\View\WebPageGeneric;
-use App\View\ViewEnv;
+use Core\View\WebPageGeneric;
+use Core\View\ViewEnv;
 
 require_once 'vendor/autoload.php';
 require_once __DIR__ . '/../vendor/autoload.php';

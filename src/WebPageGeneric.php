@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\View;
+namespace Core\View;
 
-use App\View\Interfaces\ViewTopology;
-use App\View\Interfaces\WebPage;
+use Core\View\Interfaces\ViewTopology;
+use Core\View\Interfaces\WebPage;
 use \Exception;
 use function explode;
 use function implode;
@@ -170,8 +170,18 @@ class WebPageGeneric implements WebPage
 
     public function setStyleLib(string $styleName): self
     {
-        $url = $this->viewTopology->getCssUrl() . '/' . $styleName;
+        $url = $this->viewTopology->getLibsUrl() . '/' . $styleName;
         $this->setStyleCdn($url);
+        return $this;
+    }
+
+    public function appendScripts(string $data, bool $header = true): self
+    {
+        if ($header) {
+            $this->vars['scripts_header'] .= $data;
+        } else {
+            $this->vars['scripts_footer'] .= $data;
+        }
         return $this;
     }
 

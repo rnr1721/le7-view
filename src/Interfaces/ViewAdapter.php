@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\View\Interfaces;
+namespace Core\View\Interfaces;
 
 interface ViewAdapter
 {

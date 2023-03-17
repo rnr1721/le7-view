@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\View\Interfaces;
+namespace Core\View\Interfaces;
 
 interface WebPage
 {
@@ -80,6 +80,14 @@ interface WebPage
      */
     public function setScriptLib(string $scriptName, bool $header = true, string $params = ''): self;
 
+    /**
+     * Put content after scripts section
+     * @param string $data String data
+     * @param bool $header In header or in footer
+     * @return self
+     */
+    public function appendScripts(string $data, bool $header = true):self;
+    
     /**
      * Plug style from cdn or any URL
      * @param string $url URL of style
