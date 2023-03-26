@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Core\View;
 
-use Core\View\Interfaces\ViewTopology;
-use Core\View\Interfaces\WebPage;
+use Core\Interfaces\ViewTopology;
+use Core\Interfaces\WebPage;
 use \Exception;
 use function explode;
 use function implode;

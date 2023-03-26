@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\View;
 
-use Core\View\Interfaces\ViewTopology;
+use Core\Interfaces\ViewTopology;
 
 class ViewEnv implements ViewTopology
 {
