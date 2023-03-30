@@ -60,8 +60,7 @@ trait ViewTrait
 
     public function fetchFromCache(): string|null
     {
-        $currentUri = $this->request->getUri();
-        $cacheName = $this->getCacheName($currentUri);
+        $cacheName = $this->getCacheName();
         if ($this->cache->has($cacheName)) {
             return $this->cache->get($cacheName);
         }
@@ -80,8 +79,7 @@ trait ViewTrait
             throw new Exception("You can only cache pages with a 200 server response code");
         }
         if ($cacheTimeSec !== null && !empty($this->cache)) {
-            $currentUri = $this->request->getUri();
-            $cacheName = $this->getCacheName($currentUri);
+            $cacheName = $this->getCacheName();
             if ($cacheTimeSec === 0) {
                 $this->cache->set($cacheName, $rendered);
             } else {
@@ -92,9 +90,31 @@ trait ViewTrait
         return false;
     }
 
-    private function getCacheName(string $currentUri)
+    private function getCacheName()
     {
-        return 'page_' . md5((string) $currentUri);
+        return 'page_' . md5((string) $this->request->getUri());
+    }
+
+    public function render(string $layout, array $vars = [], int $code = 200, string $headers = [], mixed $cacheTTL = null): \Psr\Http\Message\ResponseInterface
+    {
+        $this->assign($vars);
+
+        $rendered = $this->fetch($layout, $this->vars);
+
+        // if cache
+        $this->tryAddToCache($rendered, $code, $cacheTTL);
+
+        foreach ($headers as $headerKey => $headerValue) {
+            $this->response = $this->response->withHeader($headerKey, $headerValue);
+        }
+
+        if (!$this->response->hasHeader('Content-Type')) {
+            $this->response = $this->response->withHeader('Content-Type', 'text/html');
+        }
+
+        $this->response->getBody()->write($rendered);
+
+        return $this->response->withStatus($code);
     }
 
 }
