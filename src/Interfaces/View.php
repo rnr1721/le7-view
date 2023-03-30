@@ -17,10 +17,9 @@ interface View
 
     /**
      * Get string from cache
-     * @param ServerRequestInterface $request
      * @return string|null
      */
-    public function getFromCache(ServerRequestInterface $request): string|null;
+    public function fetchFromCache(): string|null;
 
     /**
      * Assign variable to template
