@@ -4,7 +4,7 @@
     <ini name="error_reporting" value="-1"/>
   </php>
   <testsuites>
-    <testsuite name="Le7 Cache tests">
+    <testsuite name="Le7 View tests">
       <directory>./tests</directory>
     </testsuite>
   </testsuites>

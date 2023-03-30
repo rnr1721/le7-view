@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\View;
 
+use Psr\SimpleCache\CacheInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use \Exception;
 use function array_key_exists,
@@ -9,9 +13,12 @@ use function array_key_exists,
              is_object,
              md5;
 
-class ViewTrait
+trait ViewTrait
 {
 
+    protected ResponseInterface $response;
+    protected ServerRequestInterface $request;
+    protected CacheInterface $cache;
     protected array $vars = [];
 
     /**
@@ -40,21 +47,41 @@ class ViewTrait
         return $this;
     }
 
+    public function renderFromCache(): ResponseInterface|null
+    {
+        $result = $this->fetchFromCache();
+        if ($result) {
+            $this->response->getBody()->write($result);
+            return $this->response->withStatus(200)
+                            ->withHeader('Content-Type', 'text/html');
+        }
+        return null;
+    }
+
+    public function fetchFromCache(): string|null
+    {
+        $currentUri = $this->request->getUri();
+        $cacheName = $this->getCacheName($currentUri);
+        if ($this->cache->has($cacheName)) {
+            return $this->cache->get($cacheName);
+        }
+        return null;
+    }
+
     /**
      * Try to add to cache
-     * @param ServerRequestInterface $request Server Request
      * @param string $rendered Html content
      * @param int|null $cacheTimeSec Cache time, 0 or null or int
      * @return bool If success
      */
-    protected function tryAddToCache(ServerRequestInterface $request, string $rendered, int $code, int|null $cacheTimeSec = null): bool
+    protected function tryAddToCache(string $rendered, int $code, int|null $cacheTimeSec = null): bool
     {
         if ($code !== 200) {
             throw new Exception("You can only cache pages with a 200 server response code");
         }
         if ($cacheTimeSec !== null && !empty($this->cache)) {
-            $currentUri = $request->getUri();
-            $cacheName = 'page_' . md5((string) $currentUri);
+            $currentUri = $this->request->getUri();
+            $cacheName = $this->getCacheName($currentUri);
             if ($cacheTimeSec === 0) {
                 $this->cache->set($cacheName, $rendered);
             } else {
@@ -63,6 +90,11 @@ class ViewTrait
             return true;
         }
         return false;
+    }
+
+    private function getCacheName(string $currentUri)
+    {
+        return 'page_' . md5((string) $currentUri);
     }
 
 }
