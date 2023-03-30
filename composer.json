@@ -1,6 +1,6 @@
 {
     "name": "rnr1721/le7-view",
-    "description": "Lightwaight PHP framework with API,CLI,WEB controllers - view interfaces",
+    "description": "View module for le7 PHP framework or any PSR PHP project",
     "keywords": ["le7", "le7-framework", "framework", "view", "component"],
     "authors": [
         {
@@ -18,17 +18,21 @@
             "Core\\": "src"
         }
     },
-    "authors": [
-        {
-            "name": "rnr1721",
-            "email": "rnr1721@gmail.com"
-        }
-    ],
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "psr/http-message": "^1.0",
+        "psr/simple-cache": "^3.0"
     },
     "require-dev": {
         "vimeo/psalm": "^5.7",
         "phpunit/phpunit": "^10.0"
+    },
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@psalm"
+        ],
+        "phpunit": "phpunit",
+        "psalm": "psalm"
     }
 }

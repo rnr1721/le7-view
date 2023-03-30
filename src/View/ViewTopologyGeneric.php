@@ -6,7 +6,7 @@ namespace Core\View;
 
 use Core\Interfaces\ViewTopology;
 
-class ViewEnv implements ViewTopology
+class ViewTopologyGeneric implements ViewTopology
 {
 
     public array $templatePath = [

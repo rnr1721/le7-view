@@ -1,7 +1,8 @@
 <?php
 
+use Core\Interfaces\ViewTopology;
 use Core\View\WebPageGeneric;
-use Core\View\ViewEnv;
+use Core\View\ViewTopologyGeneric;
 
 require_once 'vendor/autoload.php';
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -9,11 +10,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class ViewTest extends PHPUnit\Framework\TestCase
 {
 
-    private ViewEnv $topology;
+    private ViewTopology $topology;
 
     protected function setUp(): void
     {
-        $this->topology = new ViewEnv();
+        $this->topology = new ViewTopologyGeneric();
     }
 
     public function testViewEnv()
