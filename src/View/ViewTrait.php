@@ -95,7 +95,7 @@ trait ViewTrait
         return 'page_' . md5((string) $this->request->getUri());
     }
 
-    public function render(string $layout, array $vars = [], int $code = 200, string $headers = [], mixed $cacheTTL = null): \Psr\Http\Message\ResponseInterface
+    public function render(string $layout, array $vars = [], int $code = 200, array $headers = [], ?int $cacheTTL = null): ResponseInterface
     {
         $this->assign($vars);
 

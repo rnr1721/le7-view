@@ -34,9 +34,9 @@ interface View
      * Render the template
      * Return string data that you can add to cache or display
      * @param string $layout Filename in theme folder
-     * @param array $vars Template data
+     * @param array<array-key,string> $vars Template data
      * @param int $code Response code
-     * @param string[] $headers Response headers
+     * @param array<array-key, string> $headers Response headers
      * @param int|null $cacheTTL Cache TTL in seconds or null
      * @return ResponseInterface
      */
@@ -46,7 +46,7 @@ interface View
      * Fetch template data as string
      * Return string data that you can add to cache or display
      * @param string $layout Filename in theme folder
-     * @param array $vars Template data
+     * @param array<array-key, string> $vars Template data
      * @return string
      */
     public function fetch(string $layout, array $vars = array()): string;
