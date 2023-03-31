@@ -9,10 +9,7 @@ use Core\Interfaces\ViewTopology;
 class ViewTopologyGeneric implements ViewTopology
 {
 
-    public array $templatePath = [
-        'theme_path' => '',
-        'system_path' => ''
-    ];
+    public array $templatePath = [];
     public array $url = [
         'base_url' => '',
         'libs_url' => '',
@@ -58,14 +55,9 @@ class ViewTopologyGeneric implements ViewTopology
         return $this->url['images_url'];
     }
 
-    public function getTemplatePath(): string
+    public function getTemplatePath(): array
     {
-        return $this->templatePath['theme_path'];
-    }
-
-    public function getTemplateSystemPath(): string
-    {
-        return $this->templatePath['system_path'];
+        return $this->templatePath;
     }
 
     public function setBaseUrl(string $url): ViewTopology
@@ -110,16 +102,23 @@ class ViewTopologyGeneric implements ViewTopology
         return $this;
     }
 
-    public function setTemplatePath(string $path): ViewTopology
+    public function setTemplatePath(string|array $path): ViewTopology
     {
-        $this->templatePath['theme_path'] = $path;
+        if (is_string($path)) {
+            $this->addTemplatePath($path);
+        } else {
+            foreach ($path as $item) {
+                $this->addTemplatePath($item);
+            }
+        }
         return $this;
     }
 
-    public function setTemplateSystemPath(string $path): ViewTopology
+    private function addTemplatePath(string $path): void
     {
-        $this->templatePath['system_path'] = $path;
-        return $this;
+        if (!array_key_exists($path, $this->templatePath)) {
+            $this->templatePath[] = $path;
+        }
     }
 
 }

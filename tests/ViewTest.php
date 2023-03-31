@@ -28,7 +28,7 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $this->topology->setThemeUrl('http://example.com/themes/main');
         $this->topology->setFontsUrl('http://example.com/themes/main/fonts');
         $this->topology->setTemplatePath(__DIR__);
-        $this->topology->setTemplateSystemPath(__DIR__);
+        $this->topology->setTemplatePath('newpath');
 
         $this->assertEquals('http://example.com', $this->topology->getBaseUrl());
         $this->assertEquals('http://example.com/libs', $this->topology->getLibsUrl());
@@ -37,8 +37,8 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $this->assertEquals('http://example.com/themes/main/images', $this->topology->getImagesUrl());
         $this->assertEquals('http://example.com/themes/main/fonts', $this->topology->getFontsUrl());
         $this->assertEquals('http://example.com/themes/main', $this->topology->getThemeUrl());
-        $this->assertEquals(__DIR__, $this->topology->getTemplatePath());
-        $this->assertEquals(__DIR__, $this->topology->getTemplateSystemPath());
+        $this->assertEquals(__DIR__, $this->topology->getTemplatePath()[0]);
+        $this->assertEquals('newpath', $this->topology->getTemplatePath()[1]);
     }
 
     public function testWebPage()
@@ -52,7 +52,6 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $this->topology->setThemeUrl('http://example.com/themes/main');
         $this->topology->setFontsUrl('http://example.com/themes/main/fonts');
         $this->topology->setTemplatePath(__DIR__);
-        $this->topology->setTemplateSystemPath(__DIR__);
 
         $webpage = new WebPageGeneric($this->topology);
 
@@ -65,13 +64,14 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $webpage->setPageKeywords('new');
         $webpage->setScript('myscript.js', true, 'defer type="text/javascript"', '1');
         $webpage->setScript('myscript.js', false);
-        $webpage->setScriptCdn('http://myscript.js', true);
-        $webpage->setScriptCdn('http://myscript.js', false);
+        $webpage->setScriptCdn('http://example.com/myscript.js', true);
+        $webpage->setScriptCdn('http://example.com/myscript.js', false);
         $webpage->setStyle('mystyle.css');
         $webpage->setStyleCdn('https://site.com/mystyle.css');
         $webpage->setImportMap(['one' => 'two']);
         $result = strlen(json_encode($webpage->getWebpage()));
-        $this->assertEquals(1155, $result);
+        
+        $this->assertEquals(1160, $result);
         
     }
 

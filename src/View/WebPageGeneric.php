@@ -25,13 +25,13 @@ class WebPageGeneric implements WebPage
         'imports' => []
     );
     private array $vars = [
-        'urlBase' => '',
-        'urlLibs' => '',
-        'urlCss' => '',
-        'urlJs' => '',
-        'urlTheme' => '',
-        'urlImages' => '',
-        'urlFonts' => '',
+        'base' => '',
+        'libs' => '',
+        'css' => '',
+        'js' => '',
+        'theme' => '',
+        'images' => '',
+        'fonts' => '',
         'microformat' => '',
         'keywords' => '',
         'title' => '',
@@ -196,13 +196,13 @@ class WebPageGeneric implements WebPage
 
     public function getWebpage(): array
     {
-        $this->vars['urlBase'] = $this->viewTopology->getBaseUrl();
-        $this->vars['urlLibs'] = $this->viewTopology->getLibsUrl();
-        $this->vars['urlCss'] = $this->viewTopology->getCssUrl();
-        $this->vars['urlJs'] = $this->viewTopology->getJsUrl();
-        $this->vars['urlImages'] = $this->viewTopology->getImagesUrl();
-        $this->vars['urlFonts'] = $this->viewTopology->getFontsUrl();
-        $this->vars['urlTheme'] = $this->viewTopology->getThemeUrl();
+        $this->vars['base'] = $this->viewTopology->getBaseUrl();
+        $this->vars['libs'] = $this->viewTopology->getLibsUrl();
+        $this->vars['css'] = $this->viewTopology->getCssUrl();
+        $this->vars['js'] = $this->viewTopology->getJsUrl();
+        $this->vars['images'] = $this->viewTopology->getImagesUrl();
+        $this->vars['fonts'] = $this->viewTopology->getFontsUrl();
+        $this->vars['theme'] = $this->viewTopology->getThemeUrl();
 
         $res = $this->vars;
 

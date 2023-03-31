@@ -58,17 +58,10 @@ interface ViewTopology
 
     /**
      * Set filesystem path to HTML templates
-     * @param string $path Full or relative path
+     * @param string|array $path Full or relative path(s)
      * @return self
      */
-    public function setTemplatePath(string $path): self;
-
-    /**
-     * Set alternative path to HTML templates
-     * @param string $path Full or relative path
-     * @return self
-     */
-    public function setTemplateSystemPath(string $path): self;
+    public function setTemplatePath(string|array $path): self;
 
     /**
      * Get base URL of site
@@ -114,13 +107,8 @@ interface ViewTopology
 
     /**
      * Get filesystem template path
-     * @return string
+     * @return array
      */
-    public function getTemplatePath(): string;
+    public function getTemplatePath(): array;
 
-    /**
-     * Get gilesystem template alternative path
-     * @return string
-     */
-    public function getTemplateSystemPath(): string;
 }
