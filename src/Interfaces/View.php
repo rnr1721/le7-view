@@ -22,6 +22,11 @@ interface View
     public function fetchFromCache(): string|null;
 
     /**
+     * Clear all assigned vars
+     */
+    public function clear(): void;
+
+    /**
      * Assign variable to template
      * @param array|string|object $key Key as string or array $key=>$value
      * @param mixed $value Value of assigned element

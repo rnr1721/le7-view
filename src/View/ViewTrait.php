@@ -21,6 +21,11 @@ trait ViewTrait
     protected CacheInterface $cache;
     protected array $vars = [];
 
+    public function clear(): void
+    {
+        $this->vars = [];
+    }
+
     /**
      * Assign variable to template
      * @param array|string|object $key Key as string or array $key=>$value
