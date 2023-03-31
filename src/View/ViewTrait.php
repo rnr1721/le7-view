@@ -80,10 +80,7 @@ trait ViewTrait
      */
     protected function tryAddToCache(string $rendered, int $code, int|null $cacheTimeSec = null): bool
     {
-        if ($code !== 200) {
-            throw new Exception("You can only cache pages with a 200 server response code");
-        }
-        if ($cacheTimeSec !== null && !empty($this->cache)) {
+        if ($cacheTimeSec !== null && !empty($this->cache) && $code === 200) {
             $cacheName = $this->getCacheName();
             if ($cacheTimeSec === 0) {
                 $this->cache->set($cacheName, $rendered);
