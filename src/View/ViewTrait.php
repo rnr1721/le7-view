@@ -97,9 +97,8 @@ trait ViewTrait
 
     public function render(string $layout, array $vars = [], int $code = 200, array $headers = [], ?int $cacheTTL = null): ResponseInterface
     {
-        $this->assign($vars);
 
-        $rendered = $this->fetch($layout, $this->vars);
+        $rendered = $this->fetch($layout, $vars);
 
         // if cache
         $this->tryAddToCache($rendered, $code, $cacheTTL);
