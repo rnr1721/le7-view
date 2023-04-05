@@ -126,6 +126,7 @@ trait ViewTrait
     public function updateResponse(ResponseInterface $response): self
     {
         $this->response = $response;
+        return $this;
     }
 
 }
