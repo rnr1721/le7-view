@@ -55,4 +55,11 @@ interface View
      * @return string
      */
     public function fetch(string $layout, array $vars = array()): string;
+    
+    /**
+     * Update the response inside current View
+     * @param ResponseInterface $response New Response
+     * @return self
+     */
+    public function updateResponse(ResponseInterface $response):self;
 }

@@ -118,4 +118,9 @@ trait ViewTrait
         return $this->response->withStatus($code);
     }
 
+    public function updateResponse(ResponseInterface $response): self
+    {
+        $this->response = $response;
+    }
+
 }
