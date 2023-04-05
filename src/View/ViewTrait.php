@@ -52,12 +52,17 @@ trait ViewTrait
         return $this;
     }
 
-    public function renderFromCache(): ResponseInterface|null
+    public function renderFromCache(?ResponseInterface $response = null): ResponseInterface|null
     {
+        if ($response) {
+            $this->response = $response;
+        } else {
+            $response = $this->response;
+        }
         $result = $this->fetchFromCache();
         if ($result) {
-            $this->response->getBody()->write($result);
-            return $this->response->withStatus(200)
+            $response->getBody()->write($result);
+            return $response->withStatus(200)
                             ->withHeader('Content-Type', 'text/html');
         }
         return null;

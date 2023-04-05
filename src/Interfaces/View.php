@@ -11,9 +11,10 @@ interface View
 
     /**
      * Get ResponseInterface from cache
+     * @param ResponseInterface|null Response
      * @return ResponseInterface|null
      */
-    public function renderFromCache(): ResponseInterface|null;
+    public function renderFromCache(?ResponseInterface $response = null): ResponseInterface|null;
 
     /**
      * Get string from cache
