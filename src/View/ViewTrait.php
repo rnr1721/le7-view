@@ -7,7 +7,6 @@ namespace Core\View;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use \Exception;
 use function array_key_exists,
              is_array,
              is_object,
@@ -32,20 +31,20 @@ trait ViewTrait
      * @param mixed $value Value of assigned element
      * @param bool $check Check if var defined in page variables
      * @return self
-     * @throws Exception
+     * @throws ViewException
      */
     public function assign(array|string|object $key, mixed $value = null, bool $check = true): self
     {
         if (is_array($key) || is_object($key)) {
             foreach ($key as $k => $v) {
                 if ($check && array_key_exists($k, $this->vars)) {
-                    throw new Exception(_('This variable can not be used in this place:') . ' ' . $k);
+                    throw new ViewException('This variable can not be used in this place:' . ' ' . $k);
                 }
                 $this->vars[$k] = $v;
             }
         } else {
             if ($check && array_key_exists($key, $this->vars)) {
-                throw new Exception('This variable can not be used in this place:' . ' ' . $key);
+                throw new ViewException('This variable can not be used in this place:' . ' ' . $key);
             }
             $this->vars[$key] = $value;
         }

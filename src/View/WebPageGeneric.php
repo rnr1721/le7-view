@@ -6,7 +6,7 @@ namespace Core\View;
 
 use Core\Interfaces\ViewTopology;
 use Core\Interfaces\WebPage;
-use \Exception;
+
 use function explode;
 use function implode;
 use function array_key_exists;
@@ -188,7 +188,7 @@ class WebPageGeneric implements WebPage
     public function setAttribute(string $key, mixed $value): self
     {
         if (isset($this->attributes[$key])) {
-            throw new Exception("WebPageGeneric::setAttribute() Attribute with key " . $key . " exists");
+            throw new ViewException("WebPageGeneric::setAttribute() Attribute with key " . $key . " exists");
         }
         $this->attributes[$key] = $value;
         return $this;
@@ -208,7 +208,7 @@ class WebPageGeneric implements WebPage
 
         foreach ($this->attributes as $key => $value) {
             if (array_key_exists($key, $res)) {
-                throw new Exception('WebPageGeneric::getWebpage() Attribute with key ' . $key . ' exists');
+                throw new ViewException('WebPageGeneric::getWebpage() Attribute with key ' . $key . ' exists');
             } else {
                 $res[$key] = $value;
             }
