@@ -56,4 +56,28 @@ class BeforeRenderEvent implements StoppableEventInterface
         return $this->headers;
     }
 
+    public function setLayout(string $layout): self
+    {
+        $this->layout = $layout;
+        return $this;
+    }
+
+    public function setVars(array $vars): self
+    {
+        $this->vars = $vars;
+        return $this;
+    }
+
+    public function setResponse(int $responseCode): self
+    {
+        $this->responseCode = $responseCode;
+        return $this;
+    }
+
+    public function setHeaders(array $headers): self
+    {
+        $this->headers = $headers;
+        return $this;
+    }
+
 }
