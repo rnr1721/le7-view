@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Core\View;
 
+use Core\Events\BeforeRenderEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,6 +17,7 @@ use function array_key_exists,
 trait ViewTrait
 {
 
+    protected EventDispatcherInterface $eventDispatcher;
     protected ResponseInterface $response;
     protected ServerRequestInterface $request;
     protected CacheInterface $cache;
@@ -104,12 +107,21 @@ trait ViewTrait
     public function render(string $layout, array $vars = [], int $code = 200, array $headers = [], ?int $cacheTTL = null): ResponseInterface
     {
 
-        $rendered = $this->fetch($layout, $vars);
+        $beforeRendererEvent = new BeforeRenderEvent($layout, $vars, $code, $headers);
+
+        $this->eventDispatcher->dispatch($beforeRendererEvent);
+
+        $cCode = $beforeRendererEvent->getResponseCode();
+
+        $rendered = $this->fetch(
+                $beforeRendererEvent->getLayout(),
+                $beforeRendererEvent->getVars()
+        );
 
         // if cache
-        $this->tryAddToCache($rendered, $code, $cacheTTL);
+        $this->tryAddToCache($rendered, $cCode, $cacheTTL);
 
-        foreach ($headers as $headerKey => $headerValue) {
+        foreach ($beforeRendererEvent->getHeaders() as $headerKey => $headerValue) {
             $this->response = $this->response->withHeader($headerKey, $headerValue);
         }
 
@@ -119,7 +131,7 @@ trait ViewTrait
 
         $this->response->getBody()->write($rendered);
 
-        return $this->response->withStatus($code);
+        return $this->response->withStatus($cCode);
     }
 
     public function updateResponse(ResponseInterface $response): self
