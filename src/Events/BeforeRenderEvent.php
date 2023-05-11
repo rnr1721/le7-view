@@ -68,6 +68,12 @@ class BeforeRenderEvent implements StoppableEventInterface
         return $this;
     }
 
+    public function setVar(string $key, mixed $value): self
+    {
+        $this->vars[$key] = $value;
+        return $this;
+    }
+
     public function setResponse(int $responseCode): self
     {
         $this->responseCode = $responseCode;
@@ -77,6 +83,12 @@ class BeforeRenderEvent implements StoppableEventInterface
     public function setHeaders(array $headers): self
     {
         $this->headers = $headers;
+        return $this;
+    }
+
+    public function setHeader(string $headerKey, string $headerValue): self
+    {
+        $this->headers[$headerKey] = $headerValue;
         return $this;
     }
 
