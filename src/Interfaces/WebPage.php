@@ -82,7 +82,8 @@ interface WebPage
 
     /**
      * Plug script from predefined library (defined in WebPage obj constructor)
-     * @param string $scriptKey Name of script in library
+     * You can put comma-separated keys in $scriptKey param
+     * @param string $scriptKey Name of script in library (may comma-separated)
      * @param bool $header In header or in footer
      * @param string $params
      * @return self
@@ -122,7 +123,8 @@ interface WebPage
     /**
      * Plug style from library defined in webPage object constructor
      * while it created
-     * @param string $styleKey Name of style
+     * You can put comma-separated style keys to $styleKey param
+     * @param string $styleKey Name of style (can be comma-separated)
      * @return self
      */
     public function setStyleFromLib(string $styleKey): self;

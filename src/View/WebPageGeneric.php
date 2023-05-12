@@ -221,10 +221,13 @@ class WebPageGeneric implements WebPage
      */
     public function setScriptFromLib(string $scriptKey, bool $header, string $params = ''): self
     {
-        if (!array_key_exists($scriptKey, $this->scriptsLib)) {
-            throw new RuntimeException('Script not exists in library:' . $scriptKey);
+        $scriptsList = explode(',', $scriptKey);
+        foreach ($scriptsList as $cScriptKey) {
+            if (!array_key_exists($cScriptKey, $this->scriptsLib)) {
+                throw new RuntimeException('Script not exists in library:' . $cScriptKey);
+            }
+            $this->setScriptCdn($this->scriptsLib[$cScriptKey], $header, $params);
         }
-        $this->setScriptCdn($this->scriptsLib[$scriptKey], $header, $params);
         return $this;
     }
 
@@ -271,10 +274,13 @@ class WebPageGeneric implements WebPage
      */
     public function setStyleFromLib(string $styleKey): self
     {
-        if (!array_key_exists($styleKey, $this->stylesLib)) {
-            throw new RuntimeException('Style not exists in library:' . $styleKey);
+        $stylesList = explode(',', $styleKey);
+        foreach ($stylesList as $cStyleKey) {
+            if (!array_key_exists($cStyleKey, $this->stylesLib)) {
+                throw new RuntimeException('Style not exists in library:' . $cStyleKey);
+            }
+            $this->setStyleCdn($this->stylesLib[$styleKey]);
         }
-        $this->setStyleCdn($this->stylesLib[$styleKey]);
         return $this;
     }
 
