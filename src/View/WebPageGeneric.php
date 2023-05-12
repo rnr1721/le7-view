@@ -279,7 +279,7 @@ class WebPageGeneric implements WebPage
             if (!array_key_exists($cStyleKey, $this->stylesLib)) {
                 throw new RuntimeException('Style not exists in library:' . $cStyleKey);
             }
-            $this->setStyleCdn($this->stylesLib[$styleKey]);
+            $this->setStyleCdn($this->stylesLib[$cStyleKey]);
         }
         return $this;
     }
