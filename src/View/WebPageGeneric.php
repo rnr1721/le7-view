@@ -6,7 +6,7 @@ namespace Core\View;
 
 use Core\Interfaces\ViewTopology;
 use Core\Interfaces\WebPage;
-
+use \RuntimeException;
 use function explode;
 use function implode;
 use function array_key_exists;
@@ -19,11 +19,42 @@ use function str_replace;
 class WebPageGeneric implements WebPage
 {
 
+    /**
+     * Library of predefined scripts
+     * @var array
+     */
+    private array $scriptsLib = [];
+
+    /**
+     * Library of predefined styles
+     * @var array
+     */
+    private array $stylesLib = [];
+
+    /**
+     * Library of page attributes
+     * @var array
+     */
     private array $attributes = [];
+
+    /**
+     * Topology of paths used by rendering engines
+     * @var ViewTopology
+     */
     private ViewTopology $viewTopology;
+
+    /**
+     * JS importmanp data
+     * @var array
+     */
     private array $jsImportMap = array(
         'imports' => []
     );
+
+    /**
+     * Page variables for use in templates
+     * @var array
+     */
     private array $vars = [
         'base' => '',
         'libs' => '',
@@ -43,17 +74,35 @@ class WebPageGeneric implements WebPage
         'styles' => ''
     ];
 
-    public function __construct(ViewTopology $viewTopology)
+    /**
+     * WebPageGeneric constructor
+     * @param ViewTopology $viewTopology Topology object
+     * @param array $scriptsLib Predefined scripts
+     * @param array $stylesLib Predefined styles
+     */
+    public function __construct(
+            ViewTopology $viewTopology,
+            array $scriptsLib = [],
+            array $stylesLib = []
+    )
     {
         $this->viewTopology = $viewTopology;
+        $this->scriptsLib = $scriptsLib;
+        $this->stylesLib = $stylesLib;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setMicroFormatting(string $jsonMicroformat): self
     {
         $this->vars['microformat'] = $jsonMicroformat;
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setPageKeywords(string|array $keywords): self
     {
         $keywordsOld = explode(',', $this->vars['keywords']);
@@ -72,24 +121,36 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setPageTitle(string $pageTitle): self
     {
         $this->vars['title'] = $pageTitle;
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setPageHeader(string $pageHeader): self
     {
         $this->vars['header'] = $pageHeader;
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setPageDescription(string $description): self
     {
         $this->vars['description'] = $description;
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setImportMap(array $vars, bool $internal = true, string $type = "importmap"): self
     {
         foreach ($vars as $oneVar => $varValue) {
@@ -110,6 +171,9 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setScriptCdn(string $address, bool $header = true, string $params = ''): self
     {
         if (!empty($params)) {
@@ -129,6 +193,9 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setScript(string $scriptName, bool $header = true, string $params = '', string $version = ''): self
     {
         if (!empty($version)) {
@@ -139,13 +206,31 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
-    public function setScriptLib(string $scriptName, bool $header = true, string $params = ''): self
+    /**
+     * @inheritdoc
+     */
+    public function setScriptFromGlobal(string $scriptName, bool $header = true, string $params = ''): self
     {
         $url = $this->viewTopology->getLibsUrl() . '/' . $scriptName;
         $this->setScriptCdn($url, $header, $params);
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function setScriptFromLib(string $scriptKey, bool $header, string $params = ''): self
+    {
+        if (!array_key_exists($scriptKey, $this->scriptsLib)) {
+            throw new RuntimeException('Script not exists in library:' . $scriptKey);
+        }
+        $this->setScriptCdn($this->scriptsLib[$scriptKey], $header, $params);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setStyleCdn(string $url): self
     {
         $start = '<link rel="stylesheet" href="';
@@ -158,6 +243,9 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setStyle(string $styleName, string $version = ''): self
     {
         if (!empty($version)) {
@@ -168,13 +256,31 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
-    public function setStyleLib(string $styleName): self
+    /**
+     * @inheritdoc
+     */
+    public function setStyleFromGlobal(string $styleName): self
     {
         $url = $this->viewTopology->getLibsUrl() . '/' . $styleName;
         $this->setStyleCdn($url);
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function setStyleFromLib(string $styleKey): self
+    {
+        if (!array_key_exists($styleKey, $this->stylesLib)) {
+            throw new RuntimeException('Style not exists in library:' . $styleKey);
+        }
+        $this->setStyleCdn($this->stylesLib[$styleKey]);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function appendScripts(string $data, bool $header = true): self
     {
         if ($header) {
@@ -185,6 +291,9 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setAttribute(string $key, mixed $value): self
     {
         if (isset($this->attributes[$key])) {
@@ -194,6 +303,9 @@ class WebPageGeneric implements WebPage
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getWebpage(): array
     {
         $this->vars['base'] = $this->viewTopology->getBaseUrl();

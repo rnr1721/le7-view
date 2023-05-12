@@ -78,7 +78,16 @@ interface WebPage
      * @param string $params Any string params
      * @return self
      */
-    public function setScriptLib(string $scriptName, bool $header = true, string $params = ''): self;
+    public function setScriptFromGlobal(string $scriptName, bool $header = true): self;
+
+    /**
+     * Plug script from predefined library (defined in WebPage obj constructor)
+     * @param string $scriptKey Name of script in library
+     * @param bool $header In header or in footer
+     * @param string $params
+     * @return self
+     */
+    public function setScriptFromLib(string $scriptKey, bool $header, string $params): self;
 
     /**
      * Put content after scripts section
@@ -86,8 +95,8 @@ interface WebPage
      * @param bool $header In header or in footer
      * @return self
      */
-    public function appendScripts(string $data, bool $header = true):self;
-    
+    public function appendScripts(string $data, bool $header = true): self;
+
     /**
      * Plug style from cdn or any URL
      * @param string $url URL of style
@@ -108,7 +117,15 @@ interface WebPage
      * @param string $styleName Filename stylesheet
      * @return self
      */
-    public function setStyleLib(string $styleName): self;
+    public function setStyleFromGlobal(string $styleName): self;
+
+    /**
+     * Plug style from library defined in webPage object constructor
+     * while it created
+     * @param string $styleKey Name of style
+     * @return self
+     */
+    public function setStyleFromLib(string $styleKey): self;
 
     /**
      * Set mixed attribute to use in webpage templates
