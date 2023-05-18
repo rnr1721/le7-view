@@ -6,6 +6,9 @@ namespace Core\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Interface for factory that give us ready-to-config View interface
+ */
 interface ViewAdapter
 {
 

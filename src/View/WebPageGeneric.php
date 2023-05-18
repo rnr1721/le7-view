@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\View;
 
+use Core\Interfaces\AssetsCollection;
 use Core\Interfaces\ViewTopology;
 use Core\Interfaces\WebPage;
-use \RuntimeException;
 use function explode;
 use function implode;
 use function array_key_exists;
@@ -20,16 +20,10 @@ class WebPageGeneric implements WebPage
 {
 
     /**
-     * Library of predefined scripts
-     * @var array
+     * AssetsCollection
+     * @var AssetsCollection
      */
-    private array $scriptsLib = [];
-
-    /**
-     * Library of predefined styles
-     * @var array
-     */
-    private array $stylesLib = [];
+    private AssetsCollection $assetsCollection;
 
     /**
      * Library of page attributes
@@ -65,6 +59,7 @@ class WebPageGeneric implements WebPage
         'fonts' => '',
         'microformat' => '',
         'keywords' => '',
+        'meta_tags' => '',
         'title' => '',
         'header' => '',
         'description' => '',
@@ -82,13 +77,11 @@ class WebPageGeneric implements WebPage
      */
     public function __construct(
             ViewTopology $viewTopology,
-            array $scriptsLib = [],
-            array $stylesLib = []
+            AssetsCollection $assetsCollection
     )
     {
         $this->viewTopology = $viewTopology;
-        $this->scriptsLib = $scriptsLib;
-        $this->stylesLib = $stylesLib;
+        $this->assetsCollection = $assetsCollection;
     }
 
     /**
@@ -118,6 +111,46 @@ class WebPageGeneric implements WebPage
         $result = array_filter(array_unique($keywordsNew));
 
         $this->vars['keywords'] = implode(',', $result);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMetaTag(string $name, string $content): self
+    {
+        $metaTag = '<meta name="' . $name . '" content="' . $content . '">' . PHP_EOL;
+        $this->vars['meta_tags'] .= $metaTag;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setCacheControl(string $directive): self
+    {
+        $metaTag = '<meta http-equiv="Cache-Control" content="' . $directive . '">' . PHP_EOL;
+        $this->vars['meta_tags'] .= $metaTag;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setExpires(string $directive): self
+    {
+        $metaTag = '<meta http-equiv="Expires" content="' . $directive . '">' . PHP_EOL;
+        $this->vars['meta_tags'] .= $metaTag;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setLastModified(string $date): self
+    {
+        $metaTag = '<meta http-equiv="Last-Modified" content="' . $date . '">' . PHP_EOL;
+        $this->vars['meta_tags'] .= $metaTag;
         return $this;
     }
 
@@ -219,14 +252,12 @@ class WebPageGeneric implements WebPage
     /**
      * @inheritdoc
      */
-    public function setScriptFromLib(string $scriptKey, bool $header, string $params = ''): self
+    public function setScriptFromLib(string $scriptKey, bool $header = true, string $params = ''): self
     {
         $scriptsList = explode(',', $scriptKey);
         foreach ($scriptsList as $cScriptKey) {
-            if (!array_key_exists($cScriptKey, $this->scriptsLib)) {
-                throw new RuntimeException('Script not exists in library:' . $cScriptKey);
-            }
-            $this->setScriptCdn($this->scriptsLib[$cScriptKey], $header, $params);
+            $script = $this->assetsCollection->getScriptUrl($cScriptKey);
+            $this->setScriptCdn($script, $header, $params);
         }
         return $this;
     }
@@ -276,10 +307,8 @@ class WebPageGeneric implements WebPage
     {
         $stylesList = explode(',', $styleKey);
         foreach ($stylesList as $cStyleKey) {
-            if (!array_key_exists($cStyleKey, $this->stylesLib)) {
-                throw new RuntimeException('Style not exists in library:' . $cStyleKey);
-            }
-            $this->setStyleCdn($this->stylesLib[$cStyleKey]);
+            $style = $this->assetsCollection->getStyleUrl($cStyleKey);
+            $this->setStyleCdn($style);
         }
         return $this;
     }
@@ -293,6 +322,21 @@ class WebPageGeneric implements WebPage
             $this->vars['scripts_header'] .= $data;
         } else {
             $this->vars['scripts_footer'] .= $data;
+        }
+        return $this;
+    }
+
+    public function applyAssetCollection(string $collectionName): self
+    {
+        $collection = $this->assetsCollection->getCollection($collectionName);
+        foreach ($collection['scriptsHeader'] as $sFooter) {
+            $this->setScriptCdn($sFooter['script'], true, $sFooter['params']);
+        }
+        foreach ($collection['scriptsFooter'] as $sHeader) {
+            $this->setScriptCdn($sHeader['script'], false, $sHeader['params']);
+        }
+        foreach ($collection['styles'] as $style) {
+            $this->setStyleCdn($style);
         }
         return $this;
     }

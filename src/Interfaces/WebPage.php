@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Interfaces;
 
+/**
+ * WebPage object - all that needs to build web page
+ */
 interface WebPage
 {
 
@@ -21,6 +24,35 @@ interface WebPage
      * @return self
      */
     public function setPageKeywords(string|array $keywords): self;
+
+    /**
+     * Add meta-tag to webPage
+     * @param string $name Meta name
+     * @param string $content Meta content
+     * @return self
+     */
+    public function setMetaTag(string $name, string $content): self;
+
+    /**
+     * Add cache-control meta tag to web page
+     * @param string $directive
+     * @return self
+     */
+    public function setCacheControl(string $directive): self;
+
+    /**
+     * Add expires meta tag to web page
+     * @param string $directive
+     * @return self
+     */
+    public function setExpires(string $directive): self;
+
+    /**
+     * Add Last-Modified meta tag to web page
+     * @param string $date
+     * @return self
+     */
+    public function setLastModified(string $date): self;
 
     /**
      * Page title (title tag)
@@ -88,7 +120,7 @@ interface WebPage
      * @param string $params
      * @return self
      */
-    public function setScriptFromLib(string $scriptKey, bool $header, string $params): self;
+    public function setScriptFromLib(string $scriptKey, bool $header = true, string $params = ''): self;
 
     /**
      * Put content after scripts section
@@ -97,6 +129,13 @@ interface WebPage
      * @return self
      */
     public function appendScripts(string $data, bool $header = true): self;
+
+    /**
+     * Apply collection of assets to page
+     * @param string $collectionName Name of collection
+     * @return self
+     */
+    public function applyAssetCollection(string $collectionName): self;
 
     /**
      * Plug style from cdn or any URL

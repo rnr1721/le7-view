@@ -6,6 +6,9 @@ namespace Core\Interfaces;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Main view interface
+ */
 interface View
 {
 
