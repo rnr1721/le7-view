@@ -27,7 +27,11 @@ class AssetsCollectionGeneric implements AssetsCollection
      */
     protected array $collections = [];
 
-    public function __construct(array $scripts = [], array $styles = [])
+    public function __construct(
+            array $scripts = [],
+            array $styles = [],
+            array $collections = []
+    )
     {
         foreach ($scripts as $scriptKey => $scriptValue) {
             if (is_array($scriptValue)) {
@@ -42,6 +46,12 @@ class AssetsCollectionGeneric implements AssetsCollection
             }
         }
         $this->styles = $styles;
+        foreach ($collections as $collectionName => $collectionValue) {
+            $cScriptHeaders = $collectionValue['scripts_header'] ?? [];
+            $cScriptFooters = $collectionValue['scripts_footer'] ?? [];
+            $cStyles = $collectionValue['styles'] ?? [];
+            $this->setCollection($collectionName, $cScriptHeaders, $cScriptFooters, $cStyles);
+        }
     }
 
     /**

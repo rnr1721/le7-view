@@ -378,5 +378,5 @@ class WebPageGeneric implements WebPage
 
         return $res;
     }
-
+ 
 }

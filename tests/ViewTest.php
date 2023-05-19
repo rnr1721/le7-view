@@ -32,6 +32,12 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $this->assertTrue(isset($data['scriptsFooter']['axios']['params']));
         $this->assertTrue(isset($data['styles']['bootstrap5']));
         $this->assertTrue(isset($data['styles']['mystyle']));
+        
+        
+        $mycollection = $ac->getCollection('mycollection');
+        $this->assertEmpty($mycollection['scriptsFooter']);
+        $this->assertTrue(isset($mycollection['styles']['bootstrap5']));
+        $this->assertTrue(isset($mycollection['scriptsHeader']['vuejs']));
     }
 
     public function testViewEnv()
@@ -113,7 +119,18 @@ class ViewTest extends PHPUnit\Framework\TestCase
             'bootstrap5' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js'
         ];
 
-        $ac = new AssetsCollectionGeneric($scripts, $styles);
+        $collections = [
+            'mycollection' => [
+                'scripts_header' => [
+                    'vuejs'
+                ],
+                'styles' => [
+                    'bootstrap5'
+                ]
+            ]
+        ];
+
+        $ac = new AssetsCollectionGeneric($scripts, $styles, $collections);
         $ac->setScript('myscript', 'url');
         $ac->setStyle('mystyle', 'mystyleurl');
         $ac->setCollection('standard', ['bootstrap5', 'jquery', 'myscript'], ['axios'], ['bootstrap5', 'mystyle']);
