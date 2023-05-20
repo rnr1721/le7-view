@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\View;
 
-use Core\Interfaces\AssetsCollection;
-use Core\Interfaces\ViewTopology;
-use Core\Interfaces\WebPage;
+use Core\Interfaces\AssetsCollectionInterface;
+use Core\Interfaces\ViewTopologyInterface;
+use Core\Interfaces\WebPageInterface;
 use function explode;
 use function implode;
 use function array_key_exists;
@@ -16,14 +16,14 @@ use function array_unique;
 use function json_encode;
 use function str_replace;
 
-class WebPageGeneric implements WebPage
+class WebPageGeneric implements WebPageInterface
 {
 
     /**
      * AssetsCollection
-     * @var AssetsCollection
+     * @var AssetsCollectionInterface
      */
-    private AssetsCollection $assetsCollection;
+    private AssetsCollectionInterface $assetsCollection;
 
     /**
      * Library of page attributes
@@ -33,9 +33,9 @@ class WebPageGeneric implements WebPage
 
     /**
      * Topology of paths used by rendering engines
-     * @var ViewTopology
+     * @var ViewTopologyInterface
      */
-    private ViewTopology $viewTopology;
+    private ViewTopologyInterface $viewTopology;
 
     /**
      * JS importmanp data
@@ -71,13 +71,13 @@ class WebPageGeneric implements WebPage
 
     /**
      * WebPageGeneric constructor
-     * @param ViewTopology $viewTopology Topology object
+     * @param ViewTopologyInterface $viewTopology Topology object
      * @param array $scriptsLib Predefined scripts
      * @param array $stylesLib Predefined styles
      */
     public function __construct(
-            ViewTopology $viewTopology,
-            AssetsCollection $assetsCollection
+            ViewTopologyInterface $viewTopology,
+            AssetsCollectionInterface $assetsCollection
     )
     {
         $this->viewTopology = $viewTopology;

@@ -1,7 +1,7 @@
 <?php
 
+use Core\Interfaces\ViewTopologyInterface;
 use Core\View\AssetsCollectionGeneric;
-use Core\Interfaces\ViewTopology;
 use Core\View\WebPageGeneric;
 use Core\View\ViewTopologyGeneric;
 
@@ -11,7 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class ViewTest extends PHPUnit\Framework\TestCase
 {
 
-    private ViewTopology $topology;
+    private ViewTopologyInterface $topology;
 
     protected function setUp(): void
     {

@@ -7,7 +7,7 @@ namespace Core\Interfaces;
 /**
  * WebPage object - all that needs to build web page
  */
-interface WebPage
+interface WebPageInterface
 {
 
     /**

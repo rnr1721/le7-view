@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\View;
 
-use Core\Interfaces\AssetsCollection;
+use Core\Interfaces\AssetsCollectionInterface;
 
-class AssetsCollectionGeneric implements AssetsCollection
+class AssetsCollectionGeneric implements AssetsCollectionInterface
 {
 
     /**

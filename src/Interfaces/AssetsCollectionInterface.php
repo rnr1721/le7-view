@@ -5,7 +5,7 @@ namespace Core\Interfaces;
 /**
  * Assets collection manager
  */
-interface AssetsCollection
+interface AssetsCollectionInterface
 {
 
     /**

@@ -74,7 +74,7 @@ Example of configuration:
 ```
 
 Now, we can create instance of AssetsCollectionGeneric (implements
-AssetsCollection interface):
+AssetsCollectionInterface):
 
 ```php
 use Core\View\AssetsCollectionGeneric;

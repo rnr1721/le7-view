@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Core\View;
 
-use Core\Interfaces\ViewTopology;
+use Core\Interfaces\ViewTopologyInterface;
 
-class ViewTopologyGeneric implements ViewTopology
+class ViewTopologyGeneric implements ViewTopologyInterface
 {
 
     /**
@@ -96,7 +96,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setBaseUrl(string $url): ViewTopology
+    public function setBaseUrl(string $url): ViewTopologyInterface
     {
         $this->url['base_url'] = $url;
         return $this;
@@ -105,7 +105,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setThemeUrl(string $url): ViewTopology
+    public function setThemeUrl(string $url): ViewTopologyInterface
     {
         $this->url['theme_url'] = $url;
         return $this;
@@ -114,7 +114,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setLibsUrl(string $url): ViewTopology
+    public function setLibsUrl(string $url): ViewTopologyInterface
     {
         $this->url['libs_url'] = $url;
         return $this;
@@ -123,7 +123,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setCssUrl(string $url): ViewTopology
+    public function setCssUrl(string $url): ViewTopologyInterface
     {
         $this->url['css_url'] = $url;
         return $this;
@@ -132,7 +132,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setJsUrl(string $url): ViewTopology
+    public function setJsUrl(string $url): ViewTopologyInterface
     {
         $this->url['js_url'] = $url;
         return $this;
@@ -141,7 +141,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setFontsUrl(string $url): ViewTopology
+    public function setFontsUrl(string $url): ViewTopologyInterface
     {
         $this->url['fonts_url'] = $url;
         return $this;
@@ -150,7 +150,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setImagesUrl(string $url): ViewTopology
+    public function setImagesUrl(string $url): ViewTopologyInterface
     {
         $this->url['images_url'] = $url;
         return $this;
@@ -159,7 +159,7 @@ class ViewTopologyGeneric implements ViewTopology
     /**
      * @inheritDoc
      */
-    public function setTemplatePath(string|array $path): ViewTopology
+    public function setTemplatePath(string|array $path): ViewTopologyInterface
     {
         if (is_string($path)) {
             $this->addTemplatePath($path);

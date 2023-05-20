@@ -7,7 +7,7 @@ namespace Core\Interfaces;
 /**
  * Topology - main urls and paths
  */
-interface ViewTopology
+interface ViewTopologyInterface
 {
 
     /**
