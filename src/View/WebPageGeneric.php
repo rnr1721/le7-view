@@ -456,7 +456,7 @@ class WebPageGeneric implements WebPageInterface
     {
         $result = '';
         foreach ($this->metaTags as $tag) {
-            $result .= $tag;
+            $result .= $tag . PHP_EOL;
         }
         return $result;
     }
