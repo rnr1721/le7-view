@@ -26,16 +26,22 @@ class WebPageGeneric implements WebPageInterface
     private AssetsCollectionInterface $assetsCollection;
 
     /**
+     * Topology of paths used by rendering engines
+     * @var ViewTopologyInterface
+     */
+    private ViewTopologyInterface $viewTopology;
+
+    /**
      * Library of page attributes
      * @var array
      */
     private array $attributes = [];
 
     /**
-     * Topology of paths used by rendering engines
-     * @var ViewTopologyInterface
+     * Array of page keywords
+     * @var array
      */
-    private ViewTopologyInterface $viewTopology;
+    private array $keywords = [];
 
     /**
      * JS importmanp data
@@ -58,11 +64,12 @@ class WebPageGeneric implements WebPageInterface
         'images' => '',
         'fonts' => '',
         'microformat' => '',
-        'keywords' => '',
-        'meta_tags' => '',
+        'meta_tags' => [
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+        ],
         'title' => '',
         'header' => '',
-        'description' => '',
         'importmap' => '',
         'scripts_header' => '',
         'scripts_footer' => '',
@@ -98,7 +105,7 @@ class WebPageGeneric implements WebPageInterface
      */
     public function setPageKeywords(string|array $keywords): self
     {
-        $keywordsOld = explode(',', $this->vars['keywords']);
+        $keywordsOld = $this->keywords;
 
         if (is_string($keywords)) {
             $keywords = explode(',', $keywords);
@@ -110,17 +117,62 @@ class WebPageGeneric implements WebPageInterface
         // remove duplicates and empty values
         $result = array_filter(array_unique($keywordsNew));
 
-        $this->vars['keywords'] = implode(',', $result);
+        $this->keywords = $keywordsNew;
+
+        $this->setMetaTag('name', 'keywords', implode(',', $result));
         return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function setMetaTag(string $name, string $content): self
+    public function setMetaTag(string $attribute, string $value, ?string $content = null): self
     {
-        $metaTag = '<meta name="' . $name . '" content="' . $content . '">' . PHP_EOL;
-        $this->vars['meta_tags'] .= $metaTag;
+        $metaTag = $content ? '<meta ' . $attribute . '="' . $value . '" content="' . $content . '">' . PHP_EOL : '<meta ' . $attribute . '="' . $value . '">' . PHP_EOL;
+
+        $foundIndex = null;
+        $numMetaTags = count($this->vars['meta_tags']);
+
+        for ($index = 0; $index < $numMetaTags; $index++) {
+            $meta = $this->vars['meta_tags'][$index];
+
+            if ($content) {
+                if (strpos($meta, $attribute . '="' . $value . '"') !== false) {
+                    $foundIndex = $index;
+                    break;
+                }
+            } else {
+                if (strpos($meta, $attribute) !== false) {
+                    $foundIndex = $index;
+                    break;
+                }
+            }
+        }
+
+        if ($foundIndex === null) {
+            $this->vars['meta_tags'][] = $metaTag;
+        } else {
+            $this->vars['meta_tags'][$foundIndex] = $metaTag;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPageViewport(string $viewport): self
+    {
+        $this->setMetaTag('name', 'viewport', $viewport);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPageCharset(string $charset): self
+    {
+        $this->setMetaTag('charset', $charset);
         return $this;
     }
 
@@ -129,8 +181,7 @@ class WebPageGeneric implements WebPageInterface
      */
     public function setCacheControl(string $directive): self
     {
-        $metaTag = '<meta http-equiv="Cache-Control" content="' . $directive . '">' . PHP_EOL;
-        $this->vars['meta_tags'] .= $metaTag;
+        $this->setMetaTag('http-equiv', 'Cache-Control', $directive);
         return $this;
     }
 
@@ -139,8 +190,7 @@ class WebPageGeneric implements WebPageInterface
      */
     public function setExpires(string $directive): self
     {
-        $metaTag = '<meta http-equiv="Expires" content="' . $directive . '">' . PHP_EOL;
-        $this->vars['meta_tags'] .= $metaTag;
+        $this->setMetaTag('http-equiv', 'Expires', $directive);
         return $this;
     }
 
@@ -149,8 +199,34 @@ class WebPageGeneric implements WebPageInterface
      */
     public function setLastModified(string $date): self
     {
-        $metaTag = '<meta http-equiv="Last-Modified" content="' . $date . '">' . PHP_EOL;
-        $this->vars['meta_tags'] .= $metaTag;
+        $this->setMetaTag('http-equiv', 'Last-Modified', $date);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEtag(string $content): self
+    {
+        $this->setMetaTag('http-equiv', 'etag', $content);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPragma(string $content): self
+    {
+        $this->setMetaTag('http-equiv', 'pragma', $content);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPageDescription(string $description): self
+    {
+        $this->setMetaTag('name', 'description', $description);
         return $this;
     }
 
@@ -169,15 +245,6 @@ class WebPageGeneric implements WebPageInterface
     public function setPageHeader(string $pageHeader): self
     {
         $this->vars['header'] = $pageHeader;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setPageDescription(string $description): self
-    {
-        $this->vars['description'] = $description;
         return $this;
     }
 
@@ -372,11 +439,18 @@ class WebPageGeneric implements WebPageInterface
             if (array_key_exists($key, $res)) {
                 throw new ViewException('WebPageGeneric::getWebpage() Attribute with key ' . $key . ' exists');
             } else {
-                $res[$key] = $value;
+                if ($key === "meta_tags") {
+                    $res['meta_tags'] = '';
+                    foreach ($value as $metaTag) {
+                        $res['meta_tags'] .= $metaTag;
+                    }
+                } else {
+                    $res[$key] = $value;
+                }
             }
         }
 
         return $res;
     }
- 
+
 }

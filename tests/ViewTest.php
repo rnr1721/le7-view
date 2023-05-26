@@ -32,8 +32,7 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $this->assertTrue(isset($data['scriptsFooter']['axios']['params']));
         $this->assertTrue(isset($data['styles']['bootstrap5']));
         $this->assertTrue(isset($data['styles']['mystyle']));
-        
-        
+
         $mycollection = $ac->getCollection('mycollection');
         $this->assertEmpty($mycollection['scriptsFooter']);
         $this->assertTrue(isset($mycollection['styles']['bootstrap5']));
@@ -78,6 +77,9 @@ class ViewTest extends PHPUnit\Framework\TestCase
 
         $webpage = new WebPageGeneric($this->topology, $this->getAssetsCollection());
 
+        $webpage->setPageCharset('windows-1251');
+        $webpage->setPageCharset('UTF-8');
+        $webpage->setPageViewport('4444');
         $webpage->setAttribute('testAttribute2', 'testAttrValue');
         $webpage->setPageTitle('page title');
         $webpage->setPageDescription('page description');
@@ -85,7 +87,11 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $webpage->setPageKeywords(['one', 'two', 'three']);
         $webpage->setPageKeywords('new');
         $webpage->setPageKeywords('new');
+        $webpage->setPageKeywords('four');
+        $webpage->setPageDescription('page description 2');
         $webpage->setCacheControl('nocache');
+        $webpage->setPageViewport('width=device-width, initial-scale=1.0');
+        $webpage->setExpires('20220223');
         $webpage->setExpires('20220224');
         $webpage->setLastModified('20220224');
         $webpage->setScript('myscript.js', true, 'defer type="text/javascript"', '1');
@@ -102,7 +108,7 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $webpage->applyAssetCollection('standard');
         $result = strlen(json_encode($webpage->getWebpage()));
 
-        $this->assertEquals(2128, $result);
+        $this->assertEquals(2307, $result);
     }
 
     public function getAssetsCollection()
