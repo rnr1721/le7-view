@@ -44,6 +44,15 @@ class WebPageGeneric implements WebPageInterface
     private array $keywords = [];
 
     /**
+     * Meta tags temporary
+     * @var array
+     */
+    private array $metaTags = [
+        '<meta charset="UTF-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    ];
+
+    /**
      * JS importmanp data
      * @var array
      */
@@ -64,10 +73,6 @@ class WebPageGeneric implements WebPageInterface
         'images' => '',
         'fonts' => '',
         'microformat' => '',
-        'meta_tags' => [
-            '<meta charset="UTF-8">',
-            '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
-        ],
         'title' => '',
         'header' => '',
         'importmap' => '',
@@ -131,10 +136,10 @@ class WebPageGeneric implements WebPageInterface
         $metaTag = $content ? '<meta ' . $attribute . '="' . $value . '" content="' . $content . '">' . PHP_EOL : '<meta ' . $attribute . '="' . $value . '">' . PHP_EOL;
 
         $foundIndex = null;
-        $numMetaTags = count($this->vars['meta_tags']);
+        $numMetaTags = count($this->metaTags);
 
         for ($index = 0; $index < $numMetaTags; $index++) {
-            $meta = $this->vars['meta_tags'][$index];
+            $meta = $this->metaTags[$index];
 
             if ($content) {
                 if (strpos($meta, $attribute . '="' . $value . '"') !== false) {
@@ -150,9 +155,9 @@ class WebPageGeneric implements WebPageInterface
         }
 
         if ($foundIndex === null) {
-            $this->vars['meta_tags'][] = $metaTag;
+            $this->metaTags[] = $metaTag;
         } else {
-            $this->vars['meta_tags'][$foundIndex] = $metaTag;
+            $this->metaTags[$foundIndex] = $metaTag;
         }
 
         return $this;
@@ -432,6 +437,7 @@ class WebPageGeneric implements WebPageInterface
         $this->vars['images'] = $this->viewTopology->getImagesUrl();
         $this->vars['fonts'] = $this->viewTopology->getFontsUrl();
         $this->vars['theme'] = $this->viewTopology->getThemeUrl();
+        $this->vars['meta_tags'] = $this->formatMetaTags();
 
         $res = $this->vars;
 
@@ -439,18 +445,20 @@ class WebPageGeneric implements WebPageInterface
             if (array_key_exists($key, $res)) {
                 throw new ViewException('WebPageGeneric::getWebpage() Attribute with key ' . $key . ' exists');
             } else {
-                if ($key === "meta_tags") {
-                    $res['meta_tags'] = '';
-                    foreach ($value as $metaTag) {
-                        $res['meta_tags'] .= $metaTag;
-                    }
-                } else {
-                    $res[$key] = $value;
-                }
+                $res[$key] = $value;
             }
         }
 
         return $res;
+    }
+
+    private function formatMetaTags(): string
+    {
+        $result = '';
+        foreach ($this->metaTags as $tag) {
+            $result .= $tag;
+        }
+        return $result;
     }
 
 }
