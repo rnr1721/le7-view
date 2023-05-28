@@ -402,15 +402,34 @@ class WebPageGeneric implements WebPageInterface
     {
         $collection = $this->assetsCollection->getCollection($collectionName);
         foreach ($collection['scriptsHeader'] as $sFooter) {
-            $this->setScriptCdn($sFooter['script'], true, $sFooter['params']);
+            $this->setScriptCdn(
+                    $this->replaceLocalUrl($sFooter['script']),
+                    true,
+                    $sFooter['params']
+            );
         }
         foreach ($collection['scriptsFooter'] as $sHeader) {
-            $this->setScriptCdn($sHeader['script'], false, $sHeader['params']);
+            $this->setScriptCdn(
+                    $this->replaceLocalUrl($sHeader['script']),
+                    false,
+                    $sHeader['params']
+            );
         }
         foreach ($collection['styles'] as $style) {
             $this->setStyleCdn($style);
         }
         return $this;
+    }
+
+    /**
+     * Resplace local URL variable to real local URL
+     * 
+     * @param string $url URL with {url}
+     * @return string
+     */
+    private function replaceLocalUrl(string $url): string
+    {
+        return str_replace('{url}', $this->viewTopology->getBaseUrl(), $url);
     }
 
     /**

@@ -108,7 +108,7 @@ class ViewTest extends PHPUnit\Framework\TestCase
         $webpage->applyAssetCollection('standard');
         $result = strlen(json_encode($webpage->getWebpage()));
         
-        $this->assertEquals(2287, $result);
+        $this->assertEquals(2301, $result);
     }
 
     public function getAssetsCollection()
