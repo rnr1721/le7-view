@@ -429,7 +429,14 @@ class WebPageGeneric implements WebPageInterface
      */
     private function replaceLocalUrl(string $url): string
     {
-        return str_replace('{url}', $this->viewTopology->getBaseUrl(), $url);
+        $search = ['{url}', '{libs}', '{css}', '{js}'];
+        $replace = [
+            $this->viewTopology->getBaseUrl(),
+            $this->viewTopology->getLibsUrl(),
+            $this->viewTopology->getCssUrl(),
+            $this->viewTopology->getJsUrl()
+        ];
+        return str_replace($search, $replace, $url);
     }
 
     /**
