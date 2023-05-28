@@ -416,7 +416,7 @@ class WebPageGeneric implements WebPageInterface
             );
         }
         foreach ($collection['styles'] as $style) {
-            $this->setStyleCdn($style);
+            $this->setStyleCdn($this->replaceLocalUrl($style));
         }
         return $this;
     }
