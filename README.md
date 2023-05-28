@@ -73,6 +73,9 @@ Example of configuration:
         ];
 ```
 
+NOTE: Now you can use "variables" in CDN: URLs for local places:
+{url}, {libs}, {js}, {css} example: {url}/libs/jquery.js
+
 Now, we can create instance of AssetsCollectionGeneric (implements
 AssetsCollectionInterface):
 
